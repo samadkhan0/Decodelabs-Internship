@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="FocusFlow helps you organise tasks, set priorities and track your progress."
+    >
+    <title>FocusFlow — My Workspace</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <a class="brand" href="#dashboard" aria-label="FocusFlow home">
+                <span class="brand-mark">F</span>
+                <span>focusflow</span>
+            </a>
+
+            <p class="nav-heading">WORKSPACE</p>
+
+            <nav class="sidebar-nav" aria-label="Main navigation">
+                <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                    <span class="nav-icon" aria-hidden="true">⌂</span>
+                    Dashboard
+                </a>
+
+                <a href="#tasks" class="nav-link" data-section="tasks">
+                    <span class="nav-icon" aria-hidden="true">☷</span>
+                    My tasks
+                </a>
+
+                <a href="#progress" class="nav-link" data-section="progress">
+                    <span class="nav-icon" aria-hidden="true">◷</span>
+                    Progress
+                </a>
+
+                <a href="#settings" class="nav-link" data-section="settings">
+                    <span class="nav-icon" aria-hidden="true">⚙️</span>
+                    Settings
+                </a>
+            </nav>
+
+            <div class="sidebar-note">
+                <span class="note-dot" aria-hidden="true"></span>
+                <p>Small steps count. Keep showing up.</p>
+            </div>
+        </aside>
+
+        <!-- Main workspace -->
+        <main class="main-content" id="dashboard">
+
+            <header class="topbar">
+                <button
+                    class="menu-toggle"
+                    id="menuToggle"
+                    type="button"
+                    aria-label="Open navigation"
+                    aria-controls="sidebar"
+                    aria-expanded="false"
+                >
+                    ☰
+                </button>
+
+                <div class="search-box">
+                    <label class="visually-hidden" for="searchInput">
+                        Search tasks
+                    </label>
+                    <span aria-hidden="true">⌕</span>
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="Search your tasks..."
+                        autocomplete="off"
+                    >
+                    <kbd> / </kbd>
+                </div>
+
+                <div class="profile">
+                    <div class="profile-avatar" aria-hidden="true">AS</div>
+                    <div class="profile-details">
+                        <span class="profile-name">My Workspace</span>
+                        <span class="profile-role">Personal account</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="welcome-section">
+                <div>
+                    <p class="eyebrow" id="currentDate">YOUR WORKSPACE</p>
+                    <h1>A little progress goes a long way.</h1>
+                    <p class="welcome-subtitle">
+                        Keep your priorities clear and your day moving.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="primary-button"
+                    id="addTaskTop"
+                >
+                    <span aria-hidden="true">＋</span>
+                    New task
+                </button>
+            </section>
+
+            <!-- Overview cards -->
+            <section class="stats-grid" aria-label="Task overview">
+                <article class="stat-card">
+                    <div class="stat-card-top">
+                        <span class="stat-label">Total tasks</span>
+                        <span class="stat-icon purple" aria-hidden="true">☷</span>
+                    </div>
+                    <p class="stat-number" id="totalTasks">0</p>
+                    <p class="stat-caption">Everything on your list</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-card-top">
+                        <span class="stat-label">In progress</span>
+                        <span class="stat-icon orange" aria-hidden="true">◷</span>
+                    </div>
+                    <p class="stat-number" id="pendingTasks">0</p>
+                    <p class="stat-caption">Still to be completed</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-card-top">
+                        <span class="stat-label">Completed</span>
+                        <span class="stat-icon green" aria-hidden="true">✓</span>
+                    </div>
+                    <p class="stat-number" id="completedTasks">0</p>
+                    <p class="stat-caption">Tasks you've finished</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-card-top">
+                        <span class="stat-label">Completion rate</span>
+                        <span class="stat-icon blue" aria-hidden="true">↗️</span>
+                    </div>
+                    <p class="stat-number" id="completionRate">0%</p>
+                    <p class="stat-caption">Of all tasks completed</p>
+                </article>
+            </section>
+
+            <!-- Task management -->
+            <section class="content-grid">
+                <div class="task-panel" id="tasks">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>My tasks</h2>
+                            <p>Make a plan. Work through it.</p>
+                        </div>
+
+                        <span class="task-count" id="visibleTaskCount">0 tasks</span>
+                    </div>
+
+                    <form class="task-form" id="taskForm">
+                        <div class="task-input-wrap">
+                            <label class="visually-hidden" for="taskTitle">
+                                Task title
+                            </label>
+                            <input
+                                type="text"
+                                id="taskTitle"
+                                name="taskTitle"
+                                placeholder="What needs to get done?"
+                                maxlength="120"
+                                required
+                                autocomplete="off"
+                            >
+                        </div>
+
+                        <label class="visually-hidden" for="taskPriority">
+                            Task priority
+                        </label>
+                        <select id="taskPriority" name="taskPriority">
+                            <option value="low">Low priority</option>
+                            <option value="medium" selected>Medium priority</option>
+                            <option value="high">High priority</option>
+                        </select>
+
+                        <button type="submit" class="primary-button" id="addTaskButton">
+                            Add task
+                        </button>
+                    </form>
+
+                    <div class="task-toolbar">
+                        <span class="toolbar-label">Your list</span>
+
+                        <label class="visually-hidden" for="taskFilter">
+                            Filter tasks
+                        </label>
+                        <select id="taskFilter" aria-label="Filter tasks">
+                            <option value="all">All tasks</option>
+                            <option value="active">In progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+
+                    <p class="form-message" id="formMessage" role="status" aria-live="polite"></p>
+
+                    <ul class="task-list" id="taskList" aria-label="Your tasks"></ul>
+
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-icon" aria-hidden="true">✳️</div>
+                        <h3 id="emptyTitle">Nothing on your list yet</h3>
+                        <p id="emptyDescription">
+                            Add your first task above and get things moving.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Progress summary -->
+                <aside class="progress-panel" id="progress">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Your progress</h2>
+                            <p>Every finished task matters.</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="progress-circle"
+                        id="progressCircle"
+                        role="img"
+                        aria-label="0 percent of tasks completed"
+                    >
+                        <div class="progress-circle-inner">
+                            <strong id="circlePercentage">0%</strong>
+                            <span>completed</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-legend">
+                        <div class="legend-row">
+                            <span class="legend-label">
+                                <span class="legend-dot completed-dot"></span>
+                                Completed
+                            </span>
+                            <strong id="summaryCompleted">0</strong>
+                        </div>
+
+                        <div class="legend-row">
+                            <span class="legend-label">
+                                <span class="legend-dot pending-dot"></span>
+                                Remaining
+                            </span>
+                            <strong id="summaryPending">0</strong>
+                        </div>
+                    </div>
+
+                    <div class="progress-message" id="progressMessage">
+                        Start with one task. Build from there.
+                    </div>
+                </aside>
+            </section>
+
+            <footer class="app-footer">
+                <span>FocusFlow</span>
+                <span>Made for a more focused day · <span id="currentYear"></span></span>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Settings dialog -->
+    <dialog class="settings-dialog" id="settingsDialog">
+        <form method="dialog" class="settings-dialog-content">
+            <div class="panel-heading">
+                <div>
+                    <h2>Settings</h2>
+                    <p>Manage your local workspace.</p>
+                </div>
+                <button type="submit" class="icon-button" aria-label="Close settings">×</button>
+            </div>
+
+            <p class="settings-description">
+                Your tasks are saved in this browser on this device.
+                Clearing browser site data may remove them.
+            </p>
+
+            <button type="button" class="danger-button" id="clearCompletedButton">
+                Clear completed tasks
+            </button>
+
+            <button type="button" class="danger-button" id="clearAllButton">
+                Delete all tasks
+            </button>
+
+            <p class="form-message" id="settingsMessage" role="status" aria-live="polite"></p>
+        </form>
+    </dialog>
+</body>
+</html>
