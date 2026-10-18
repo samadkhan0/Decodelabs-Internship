@@ -1,15 +1,8 @@
 "use strict";
 
-/* -----------------------------------------
-   Configuration
------------------------------------------ */
 
 const STORAGE_KEY = "focusflow-tasks-v2";
 const LEGACY_STORAGE_KEY = "focusflow-tasks";
-
-/* -----------------------------------------
-   HTML Elements
------------------------------------------ */
 
 const elements = {
     taskForm: document.getElementById("taskForm"),
@@ -51,16 +44,12 @@ const elements = {
     sidebar: document.getElementById("sidebar")
 };
 
-/* -----------------------------------------
-   Application State
------------------------------------------ */
+
 
 let tasks = [];
 let messageTimeout = null;
 
-/* -----------------------------------------
-   Utility Functions
------------------------------------------ */
+ 
 
 function createTaskId() {
     if (
@@ -121,10 +110,6 @@ function updateDate() {
         elements.currentYear.textContent = now.getFullYear();
     }
 }
-
-/* -----------------------------------------
-   Local Storage
------------------------------------------ */
 
 function readStoredTasks(value) {
     if (!Array.isArray(value)) {
@@ -194,9 +179,6 @@ function saveTasks() {
     }
 }
 
-/* -----------------------------------------
-   Add Task
------------------------------------------ */
 
 function handleAddTask(event) {
     event.preventDefault();
@@ -204,7 +186,7 @@ function handleAddTask(event) {
     if (!elements.taskTitle || !elements.taskPriority) {
         console.error("FocusFlow: task input elements were not found.");
         return;
-    }
+        }
 
     const title = elements.taskTitle.value.trim();
     const priority = elements.taskPriority.value;
@@ -253,15 +235,13 @@ function handleAddTask(event) {
     }
 }
 
-/* -----------------------------------------
-   Search and Filter
------------------------------------------ */
+
 
 function getVisibleTasks() {
     const searchTerm = elements.searchInput
         ? elements.searchInput.value.trim().toLowerCase()
         : "";
-
+       
     const filter = elements.taskFilter
         ? elements.taskFilter.value
         : "all";
@@ -279,10 +259,6 @@ function getVisibleTasks() {
         return matchesSearch && matchesFilter;
     });
 }
-
-/* -----------------------------------------
-   Create Task Element
------------------------------------------ */
 
 function createTaskElement(task) {
     const item = document.createElement("li");
@@ -344,9 +320,6 @@ function createTaskElement(task) {
     return item;
 }
 
-/* -----------------------------------------
-   Render Task List
------------------------------------------ */
 
 function renderTaskList() {
     if (!elements.taskList) {
@@ -401,9 +374,6 @@ function renderTaskList() {
     }
 }
 
-/* -----------------------------------------
-   Update Statistics and Progress
------------------------------------------ */
 
 function renderStatistics() {
     const total = tasks.length;
@@ -473,18 +443,11 @@ function renderStatistics() {
     }
 }
 
-/* -----------------------------------------
-   Render Dashboard
------------------------------------------ */
-
 function renderDashboard() {
     renderStatistics();
     renderTaskList();
 }
 
-/* -----------------------------------------
-   Task Actions
------------------------------------------ */
 
 function toggleTask(taskId) {
     const task = tasks.find(
@@ -515,9 +478,6 @@ function deleteTask(taskId) {
     showMessage("Task deleted.");
 }
 
-/* -----------------------------------------
-   Settings Actions
------------------------------------------ */
 
 function clearCompletedTasks() {
     const completedCount = tasks.filter(
@@ -557,9 +517,6 @@ function clearAllTasks() {
     showSettingsMessage("All tasks have been cleared.");
 }
 
-/* -----------------------------------------
-   Sidebar Navigation
------------------------------------------ */
 
 function closeSidebar() {
     if (elements.sidebar) {
@@ -568,28 +525,56 @@ function closeSidebar() {
 }
 
 function setupNavigation() {
-    document.querySelectorAll("[data-section]").forEach((link) => {
+    const navLinks = document.querySelectorAll(
+        ".sidebar-nav [data-section]"
+    );
+
+    navLinks.forEach((link) => {
         link.addEventListener("click", (event) => {
             const section = link.dataset.section;
 
-            // Allow normal navigation if no matching section exists.
-            const target = getElement(section);
-
-            if (target) {
+            // Settings is handled separately by its dialog.
+            if (section === "settings") {
                 event.preventDefault();
 
-                document.querySelectorAll("[data-section]").forEach(
-                    (item) => item.classList.remove("active")
-                );
+                const dialog = document.getElementById("settingsDialog");
 
-                link.classList.add("active");
-
-                document.querySelectorAll(".page-section").forEach(
-                    (item) => {
-                        item.hidden = item !== target;
+                if (dialog && typeof dialog.showModal === "function") {
+                    if (!dialog.open) {
+                        dialog.showModal();
                     }
-                );
+                } else if (dialog) {
+                    dialog.setAttribute("open", "");
+                }
+
+                closeSidebar();
+                return;
             }
+
+            const target = document.getElementById(section);
+
+            if (!target) {
+                console.warn(
+                    `FocusFlow: navigation target "${section}" was not found.`
+                );
+                return;
+            }
+
+            event.preventDefault();
+
+            // Update the active navigation link.
+            navLinks.forEach((item) => {
+                item.classList.toggle("active", item === link);
+            });
+
+            // Scroll to the requested panel.
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+            // Update the URL without reloading the page.
+            history.replaceState(null, "", `#${section}`);
 
             closeSidebar();
         });
@@ -598,15 +583,19 @@ function setupNavigation() {
     if (elements.menuToggle) {
         elements.menuToggle.addEventListener("click", () => {
             if (elements.sidebar) {
-                elements.sidebar.classList.toggle("active");
+                const isOpen =
+                    elements.sidebar.classList.toggle("is-open");
+
+                elements.menuToggle.setAttribute(
+                    "aria-expanded",
+                    String(isOpen)
+                );
             }
         });
     }
 }
 
-/* -----------------------------------------
-   Settings Dialog
------------------------------------------ */
+
 
 function setupSettings() {
     const settingsOpenButton = getElement("settingsButton");
@@ -647,16 +636,14 @@ function setupSettings() {
     }
 }
 
-/* -----------------------------------------
-   Event Listeners
------------------------------------------ */
+
 
 function setupEventListeners() {
     if (elements.taskForm) {
         elements.taskForm.addEventListener(
             "submit",
             handleAddTask
-        );
+                );
     } else {
         console.error(
             'FocusFlow: form with id "taskForm" was not found.'
@@ -707,10 +694,6 @@ function setupEventListeners() {
         }
     });
 }
-
-/* -----------------------------------------
-   Initialize Application
------------------------------------------ */
 
 function initialiseDashboard() {
     console.log("FocusFlow: initializing dashboard...");
